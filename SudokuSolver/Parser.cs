@@ -24,6 +24,7 @@ namespace SudokuSolver
             foreach(char value in charArray)
             {
                 Cell cell = new Cell(value, cellNumber, bookkeeper);
+                cellNumber++;
             }
         }
 

@@ -15,7 +15,13 @@ namespace SudokuSolver
             JoinRow(bookkeeper);
         }
 
-        public void JoinRow(Bookkeeper bookkeeper)
+        public Cell(char value, int cellNumber) //for test
+        {
+            this.cellNumber = cellNumber;
+            this.value = value;
+        }
+
+        private void JoinRow(Bookkeeper bookkeeper)
         {
             Row assignedRow = bookkeeper.RequestRow(cellNumber);
             if (assignedRow.RequestMembership(cellNumber, this)) { associatedRow = assignedRow; }

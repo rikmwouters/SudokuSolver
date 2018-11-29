@@ -8,7 +8,32 @@ namespace SudokuSolverTest
     [TestClass]
     public class RowTest
     {
-        /*
+        [TestMethod]
+        public void RowAcceptsCellIntoVacancy()
+        {
+            Row row = new Row(0);
+            int[] positions = { 1, 2, 3 };
+            row.SendAssignedCells(positions);
+            Cell cell = new Cell('1', 1);
+            row.RequestMembership(1, cell);
+
+            Assert.AreEqual(1, row.GetMembers().Count());
+        }
+
+        [TestMethod]
+        public void RowAcceptsOnlyOneCellPerVacancy()
+        {
+            Row row = new Row(0);
+            int[] positions = { 1, 2, 3 };
+            row.SendAssignedCells(positions);
+            Cell cell1 = new Cell('1', 1);
+            Cell cell2 = new Cell('1', 1);
+            row.RequestMembership(1, cell1);
+            row.RequestMembership(1, cell2);
+
+            Assert.AreEqual(1, row.GetMembers().Count());
+        }
+
         [TestMethod]
         public void RowsContainNineCells()
         {
@@ -22,6 +47,6 @@ namespace SudokuSolverTest
                 Assert.AreEqual(9, row.GetMembers().Count());
             }
         }
-        */
+        
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SudokuSolver
@@ -20,44 +21,44 @@ namespace SudokuSolver
 
         public Row RequestRow(int cellNumber)
         {
-            int associatedRowNumber = 0;
+            int associatedRowNumber = -1; //I chose a random number that isn't valid
 
             switch (cellNumber)
             {
-                case int n when (n <= 9):
+                case int n when (n < 9):
+                    associatedRowNumber = 0;
+                    break;
+
+                case int n when (n >= 9 && n < 18):
                     associatedRowNumber = 1;
                     break;
 
-                case int n when (n > 9 && n <= 18):
+                case int n when (n >= 18 && n < 27):
                     associatedRowNumber = 2;
                     break;
 
-                case int n when (n > 18 && n <= 27):
+                case int n when (n >= 27 && n < 36):
                     associatedRowNumber = 3;
                     break;
 
-                case int n when (n > 27 && n <= 36):
+                case int n when (n >= 36 && n < 45):
                     associatedRowNumber = 4;
                     break;
 
-                case int n when (n > 36 && n <= 45):
+                case int n when (n >= 45 && n < 54):
                     associatedRowNumber = 5;
                     break;
 
-                case int n when (n > 45 && n <= 54):
+                case int n when (n >= 54 && n < 63):
                     associatedRowNumber = 6;
                     break;
 
-                case int n when (n > 54 && n <= 63):
+                case int n when (n >= 63 && n < 72):
                     associatedRowNumber = 7;
                     break;
 
-                case int n when (n > 63 && n <= 72):
+                case int n when (n >= 72 && n < 81):
                     associatedRowNumber = 8;
-                    break;
-
-                case int n when (n > 72 && n <= 81):
-                    associatedRowNumber = 9;
                     break;
 
                 default:

@@ -26,7 +26,7 @@ namespace SudokuSolver
             if (vacancies.Contains(cellNumber))
             {
                 approval = true;
-                vacancies[Array.IndexOf(vacancies, cellNumber)] = -cellNumber;
+                vacancies[Array.IndexOf(vacancies, cellNumber)] = cellNumber + 100;
                 members.Add(cell);
             }
             return approval;

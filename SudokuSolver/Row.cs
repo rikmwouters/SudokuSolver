@@ -41,5 +41,10 @@ namespace SudokuSolver
         {
             return members;
         }
+
+        internal int[] GetVacancies() //for test
+        {
+            return vacancies;
+        }
     }
 }

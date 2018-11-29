@@ -47,6 +47,25 @@ namespace SudokuSolverTest
                 Assert.AreEqual(9, row.GetMembers().Count());
             }
         }
+
+        [TestMethod]
+        public void AllVancanciesFinallyCleared()
+        {
+            string input = "000820090500000000308040007100000040006402503000090010093004000004035200000700900";
+            Parser parser = new Parser(input);
+
+            List<Row> allRows = parser.GetBookkeeper().GetAllRows();
+
+            foreach (Row row in allRows)
+            {
+                for(int i = 0; i < 9; i++)
+                {
+                    Assert.IsTrue(row.GetVacancies()[i] >= 100);
+                }
+
+                
+            }
+        }
         
     }
 }

@@ -62,10 +62,7 @@ namespace SudokuSolverTest
                 {
                     Assert.IsTrue(row.GetVacancies()[i] >= 100);
                 }
-
-                
             }
         }
-        
     }
 }

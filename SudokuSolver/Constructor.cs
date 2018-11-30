@@ -25,7 +25,8 @@
         {
             for(int i = 0; i < 9; i++)
             {
-
+                Column newColumn = new Column(i);
+                bookkeeper.ProcessNewColumn(newColumn, i);
             }
         }
 

@@ -8,13 +8,15 @@ namespace SudokuSolver
         private int value;
         private Row associatedRow;
         private Column associatedColumn;
+        private Block associatedBlock;
 
         public Cell(char value, int cellNumber, Bookkeeper bookkeeper)
         {
             this.cellNumber = cellNumber;
             this.value = value;
-            JoinRow(bookkeeper);
-            JoinColumn(bookkeeper);
+            FindRow(bookkeeper);
+            FindColumn(bookkeeper);
+            //FindBlock(bookkeeper);
         }
 
         public Cell(char value, int cellNumber) //for test
@@ -23,16 +25,31 @@ namespace SudokuSolver
             this.value = value;
         }
 
-        private void JoinRow(Bookkeeper bookkeeper)
+        private void FindRow(Bookkeeper bookkeeper)
         {
-            Row assignedRow = bookkeeper.RequestRow(cellNumber);
-            if (assignedRow.RequestMembership(cellNumber, this)) { associatedRow = assignedRow; }
+            for(int i = 0; i < 9; i++)
+            {
+                Row SuggestedRow = bookkeeper.RowSuggestion(i);
+                if (SuggestedRow.RequestMembership(cellNumber, this)) { associatedRow = SuggestedRow; break; }
+            }
         }
 
-        private void JoinColumn(Bookkeeper bookkeeper)
+        private void FindColumn(Bookkeeper bookkeeper)
         {
-            Column assignedColumn = bookkeeper.RequestColumn(cellNumber);
-            if (assignedColumn.RequestMembership(cellNumber, this)) { associatedColumn = assignedColumn; }
+            for (int i = 0; i < 9; i++)
+            {
+                Column SuggestedColumn = bookkeeper.ColumnSuggestion(i);
+                if (SuggestedColumn.RequestMembership(cellNumber, this)) { associatedColumn = SuggestedColumn; break; }
+            }
+        }
+
+        private void FindBlock(Bookkeeper bookkeeper)
+        {
+            for (int i = 0; i < 9; i++)
+            {
+                Block SuggestedBlock = bookkeeper.BlockSuggestion(i);
+                if (SuggestedBlock.RequestMembership(cellNumber, this)) { associatedBlock = SuggestedBlock; break; }
+            }
         }
 
         internal int GetCellNumber() //for test

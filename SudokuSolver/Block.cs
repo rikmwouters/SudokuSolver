@@ -5,13 +5,13 @@ using System.Text;
 
 namespace SudokuSolver
 {
-    class Column
+    class Block
     {
-        public int columnNumber;
+        public int blockNumber;
         private int[] vacancies;
         private List<Cell> members = new List<Cell>();
 
-        public Column(int columnNumber) => this.columnNumber = columnNumber;
+        public Block(int blockNumber) => this.blockNumber = blockNumber;
 
         public void SendAssignedCells(int[] positions)
         {
@@ -30,9 +30,9 @@ namespace SudokuSolver
             return approval;
         }
 
-        public int GetColumnNumber()
+        public int GetBlockNumber()
         {
-            return columnNumber;
+            return blockNumber;
         }
 
         internal List<Cell> GetMembers() //for test

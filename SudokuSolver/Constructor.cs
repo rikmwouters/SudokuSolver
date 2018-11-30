@@ -30,6 +30,16 @@
             }
         }
 
+        private void ConstructBlocks()
+        {
+            int[] StartPosition = { 0, 3, 6, 27, 30, 33, 54, 57, 60 };
+            for (int i = 0; i < 9; i++)
+            {
+                Block newBlock = new Block(i);
+                bookkeeper.ProcessNewBlock(newBlock, StartPosition[i]);
+            }
+        }
+
         public Bookkeeper GetBookkeeper()
         {
             return bookkeeper;

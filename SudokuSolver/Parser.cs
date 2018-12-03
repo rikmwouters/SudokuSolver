@@ -28,6 +28,7 @@ namespace SudokuSolver
             }
 
             startCell = startCell.GetNextCell();
+            previousCell.SetNextCell(startCell);
         }
 
         private void CreateFirstGroups()

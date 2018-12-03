@@ -8,11 +8,6 @@ namespace SudokuSolver
         private List<Cell> members = new List<Cell>();
         public int rowNumber;
 
-        public Row(int rowNumber)
-        {
-            this.rowNumber = rowNumber;
-        }
-
         public Row(int rowNumber, Cell cell)
         {
             this.rowNumber = rowNumber;
@@ -26,6 +21,16 @@ namespace SudokuSolver
             {
                 AddMember(currentCell);
                 currentCell = currentCell.GetNextCell();
+            }
+
+            MaybeCreateNextRow(currentCell);
+        }
+
+        private void MaybeCreateNextRow(Cell currentCell)
+        {
+            if (currentCell.GetNextCell().GetAssociatedRow() == null)
+            {
+                Row row = new Row(GetRowNumber() + 1, currentCell.GetNextCell());
             }
         }
 

@@ -28,18 +28,18 @@ namespace SudokuSolver
             MaybeCreateNextColumn(cell);
         }
 
+        private void AddMember(Cell cell)
+        {
+            members.Add(cell);
+            cell.SetAssociatedColumn(this);
+        }
+
         private void MaybeCreateNextColumn(Cell cell)
         {
             if (cell.GetNextCell().GetAssociatedColumn() == null)
             {
                 Column column = new Column(GetColumnNumber() + 1, cell.GetNextCell());
             }
-        }
-
-        private void AddMember(Cell cell)
-        {
-            members.Add(cell);
-            cell.SetAssociatedColumn(this);
         }
 
         public int GetColumnNumber()

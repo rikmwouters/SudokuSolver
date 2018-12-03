@@ -26,18 +26,18 @@ namespace SudokuSolver
             MaybeCreateNextRow(currentCell);
         }
 
+        private void AddMember(Cell cell)
+        {
+            members.Add(cell);
+            cell.SetAssociatedRow(this);
+        }
+
         private void MaybeCreateNextRow(Cell currentCell)
         {
             if (currentCell.GetNextCell().GetAssociatedRow() == null)
             {
                 Row row = new Row(GetRowNumber() + 1, currentCell.GetNextCell());
             }
-        }
-
-        private void AddMember(Cell cell)
-        {
-            members.Add(cell);
-            cell.SetAssociatedRow(this);
         }
 
         public int GetRowNumber()

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace SudokuSolver
@@ -12,7 +11,6 @@ namespace SudokuSolver
         public Block(int blockNumber, Cell cell)
         {
             this.blockNumber = blockNumber;
-            Console.WriteLine("A block has been created at cell " + cell.GetCellNumber());
             RecruitMembers(cell);
         }
 

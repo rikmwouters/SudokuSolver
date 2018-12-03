@@ -5,7 +5,7 @@ namespace SudokuSolver
     class Cell
     {
         private int cellNumber;
-        private int value;
+        private char value;
         private Cell nextCell;
         private Row associatedRow;
         private Column associatedColumn;
@@ -30,6 +30,11 @@ namespace SudokuSolver
         public Cell GetNextCell()
         {
             return nextCell;
+        }
+
+        public char GetValue()
+        {
+            return value;
         }
 
         public void SetAssociatedRow(Row row)

@@ -8,27 +8,35 @@ namespace SudokuSolver
 
         public Parser(string input)
         {
-            ParseInput(input);
+            PrepareParser(input);
             CreateFirstGroups();
+            Viewer viewer = new Viewer(startCell);
         }
 
-        private void ParseInput(string input)
+        private void PrepareParser(string input)
         {
             char[] charArray = input.ToCharArray();
-            int cellNumber = 0;
             startCell = new Cell();
-            Cell previousCell = startCell;
+            RunParser(charArray, 0, startCell);
+        }
 
-            foreach(char value in charArray)
+        private void RunParser(char[] charArray, int cellNumber, Cell startCell)
+        {
+            Cell currentCell = startCell;
+            foreach (char value in charArray)
             {
-                Cell currentCell = new Cell(value, cellNumber);
-                previousCell.SetNextCell(currentCell);
-                previousCell = currentCell;
+                Cell nextCell = new Cell(value, cellNumber);
+                currentCell.SetNextCell(nextCell);
+                currentCell = nextCell;
                 cellNumber++;
             }
+            MakeFieldCircular(currentCell);
+        }
 
+        private void MakeFieldCircular(Cell finalCell)
+        {
             startCell = startCell.GetNextCell();
-            previousCell.SetNextCell(startCell);
+            finalCell.SetNextCell(startCell);
         }
 
         private void CreateFirstGroups()

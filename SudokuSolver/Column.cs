@@ -1,33 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace SudokuSolver
 {
     class Column
     {
         public int columnNumber;
-        private int[] vacancies;
         private List<Cell> members = new List<Cell>();
 
-        public Column(int columnNumber) => this.columnNumber = columnNumber;
-
-        public void SendAssignedCells(int[] positions)
+        public Column(int columnNumber, Cell cell)
         {
-            vacancies = positions;
+            this.columnNumber = columnNumber;
+            RecruitMembers(cell);
         }
 
-        public bool RequestMembership(int cellNumber, Cell cell)
+        private void RecruitMembers(Cell cell)
         {
-            bool approval = false;
-            if (vacancies.Contains(cellNumber))
+            Cell currentCell = cell;
+            for (int i = 0; i < 73; i++)
+                //73 because the last row doesn't have to be 
+                //completely iterated, so 72 is the last.
             {
-                approval = true;
-                vacancies[Array.IndexOf(vacancies, cellNumber)] = cellNumber + 100;
-                members.Add(cell);
+                if (i % 9 == 0) { AddMember(currentCell); }
+                currentCell = currentCell.GetNextCell();
             }
-            return approval;
+        }
+
+        private void AddMember(Cell cell)
+        {
+            members.Add(cell);
+            cell.SetAssociatedColumn(this);
         }
 
         public int GetColumnNumber()
@@ -35,14 +37,9 @@ namespace SudokuSolver
             return columnNumber;
         }
 
-        internal List<Cell> GetMembers() //for test
+        internal int CountMembers()
         {
-            return members;
-        }
-
-        internal int[] GetVacancies() //for test
-        {
-            return vacancies;
+            return members.Count();
         }
     }
 }

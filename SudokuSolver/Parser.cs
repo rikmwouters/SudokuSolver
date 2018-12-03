@@ -4,38 +4,42 @@ namespace SudokuSolver
 {
     class Parser
     {
-        internal Constructor constructor; //for test
-        internal Bookkeeper bookkeeper; //for test
+        private Cell startCell;
 
         public Parser(string input)
         {
-            Constructor constructor = new Constructor();
-            this.constructor = constructor; //for test
-            Bookkeeper bookkeeper = constructor.GetBookkeeper();
-            this.bookkeeper = bookkeeper; //for test
-            ParseInput(input, bookkeeper);
+            ParseInput(input);
+            CreateFirstGroups();
         }
 
-        private void ParseInput(string input, Bookkeeper bookkeeper)
+        private void ParseInput(string input)
         {
             char[] charArray = input.ToCharArray();
             int cellNumber = 0;
+            startCell = new Cell();
+            Cell previousCell = startCell;
 
             foreach(char value in charArray)
             {
-                Cell cell = new Cell(value, cellNumber, bookkeeper);
+                Cell currentCell = new Cell(value, cellNumber);
+                previousCell.SetNextCell(currentCell);
+                previousCell = currentCell;
                 cellNumber++;
             }
+
+            startCell = startCell.GetNextCell();
         }
 
-        internal Constructor GetConstructor() //for test
+        private void CreateFirstGroups()
         {
-            return constructor;
+            Row row = new Row(0, startCell);
+            Column column = new Column(0, startCell);
+            Block block = new Block(0, startCell);
         }
 
-        internal Bookkeeper GetBookkeeper() //for test
+        public Cell GetStartCell() //for test
         {
-            return bookkeeper;
+            return startCell;
         }
     }
 }

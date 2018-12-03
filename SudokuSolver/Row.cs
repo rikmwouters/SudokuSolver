@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace SudokuSolver
 {
     class Row
     {
-        private int[] vacancies;
         private List<Cell> members = new List<Cell>();
         public int rowNumber;
 
@@ -15,21 +13,26 @@ namespace SudokuSolver
             this.rowNumber = rowNumber;
         }
 
-        public void SendAssignedCells(int[] positions)
+        public Row(int rowNumber, Cell cell)
         {
-            this.vacancies = positions;
+            this.rowNumber = rowNumber;
+            RecruitMembers(cell);
         }
 
-        public bool RequestMembership(int cellNumber, Cell cell)
+        private void RecruitMembers(Cell cell)
         {
-            bool approval = false;
-            if (vacancies.Contains(cellNumber))
+            Cell currentCell = cell;
+            for(int i = 0; i < 9; i++)
             {
-                approval = true;
-                vacancies[Array.IndexOf(vacancies, cellNumber)] = cellNumber + 100;
-                members.Add(cell);
+                AddMember(currentCell);
+                currentCell = currentCell.GetNextCell();
             }
-            return approval;
+        }
+
+        private void AddMember(Cell cell)
+        {
+            members.Add(cell);
+            cell.SetAssociatedRow(this);
         }
 
         public int GetRowNumber()
@@ -37,14 +40,9 @@ namespace SudokuSolver
             return rowNumber;
         }
 
-        internal List<Cell> GetMembers() //for test
+        internal int CountMembers()
         {
-            return members;
-        }
-
-        internal int[] GetVacancies() //for test
-        {
-            return vacancies;
+            return members.Count();
         }
     }
 }

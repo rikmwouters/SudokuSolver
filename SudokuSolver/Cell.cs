@@ -6,18 +6,10 @@ namespace SudokuSolver
     {
         private int cellNumber;
         private int value;
+        private Cell nextCell;
         private Row associatedRow;
         private Column associatedColumn;
         private Block associatedBlock;
-
-        public Cell(char value, int cellNumber, Bookkeeper bookkeeper)
-        {
-            this.cellNumber = cellNumber;
-            this.value = value;
-            FindRow(bookkeeper);
-            FindColumn(bookkeeper);
-            //FindBlock(bookkeeper);
-        }
 
         public Cell(char value, int cellNumber) //for test
         {
@@ -25,36 +17,43 @@ namespace SudokuSolver
             this.value = value;
         }
 
-        private void FindRow(Bookkeeper bookkeeper)
+        public Cell() //Start cell
         {
-            for(int i = 0; i < 9; i++)
-            {
-                Row SuggestedRow = bookkeeper.RowSuggestion(i);
-                if (SuggestedRow.RequestMembership(cellNumber, this)) { associatedRow = SuggestedRow; break; }
-            }
+
         }
 
-        private void FindColumn(Bookkeeper bookkeeper)
+        public void SetNextCell(Cell nextCell)
         {
-            for (int i = 0; i < 9; i++)
-            {
-                Column SuggestedColumn = bookkeeper.ColumnSuggestion(i);
-                if (SuggestedColumn.RequestMembership(cellNumber, this)) { associatedColumn = SuggestedColumn; break; }
-            }
+            this.nextCell = nextCell;
         }
 
-        private void FindBlock(Bookkeeper bookkeeper)
+        public Cell GetNextCell()
         {
-            for (int i = 0; i < 9; i++)
-            {
-                Block SuggestedBlock = bookkeeper.BlockSuggestion(i);
-                if (SuggestedBlock.RequestMembership(cellNumber, this)) { associatedBlock = SuggestedBlock; break; }
-            }
+            return nextCell;
+        }
+
+        public void SetAssociatedRow(Row row)
+        {
+            this.associatedRow = row;
+        }
+
+        public void SetAssociatedColumn(Column column)
+        {
+            this.associatedColumn = column;
+        }
+
+        public void SetAssociatedBlock(Block block)
+        {
+            this.associatedBlock = block;
         }
 
         internal int GetCellNumber() //for test
         {
             return cellNumber;
         }
+
+        internal Row GetAssociatedRow() => associatedRow; //for test
+        internal Column GetAssociatedColumn() => associatedColumn; //for test
+        internal Block GetAssociatedBlock() => associatedBlock; //for test
     }
 }

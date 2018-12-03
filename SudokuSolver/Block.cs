@@ -1,33 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace SudokuSolver
 {
     class Block
     {
         public int blockNumber;
-        private int[] vacancies;
         private List<Cell> members = new List<Cell>();
 
-        public Block(int blockNumber) => this.blockNumber = blockNumber;
-
-        public void SendAssignedCells(int[] positions)
+        public Block(int blockNumber, Cell cell)
         {
-            vacancies = positions;
+            this.blockNumber = blockNumber;
+            RecruitMembers(cell);
         }
 
-        public bool RequestMembership(int cellNumber, Cell cell)
+        private void RecruitMembers(Cell cell)
         {
-            bool approval = false;
-            if (vacancies.Contains(cellNumber))
+            Cell currentCell = cell;
+            for (int i = 0; i < 9; i++)
             {
-                approval = true;
-                vacancies[Array.IndexOf(vacancies, cellNumber)] = cellNumber + 100;
-                members.Add(cell);
+                if(i == 3)
+                {
+                    currentCell = currentCell.GetNextCell().GetNextCell().GetNextCell().GetNextCell().GetNextCell().GetNextCell();
+                }
+                AddMember(currentCell);
+                currentCell = currentCell.GetNextCell();
             }
-            return approval;
+        }
+
+        private void AddMember(Cell cell)
+        {
+            members.Add(cell);
+            cell.SetAssociatedBlock(this);
         }
 
         public int GetBlockNumber()
@@ -35,14 +39,9 @@ namespace SudokuSolver
             return blockNumber;
         }
 
-        internal List<Cell> GetMembers() //for test
+        internal int CountMembers()
         {
-            return members;
-        }
-
-        internal int[] GetVacancies() //for test
-        {
-            return vacancies;
+            return members.Count();
         }
     }
 }

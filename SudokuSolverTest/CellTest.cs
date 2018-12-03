@@ -8,23 +8,26 @@ namespace SudokuSolverTest
     [TestClass]
     public class CellTest
     {
-        
-        /*
         [TestMethod]
-        public void AllCellsExist()
+        public void FieldIsCircular()
         {
             string input = "000820090500000000308040007100000040006402503000090010093004000004035200000700900";
             Parser parser = new Parser(input);
 
-            List<Row> allRows = parser.GetBookkeeper().GetAllRows();
+            Cell startCell = parser.GetStartCell();
+            Cell currentCell = startCell;
 
-            foreach(Row row in allRows)
+            for(int i = 0; i < 41; i++)
             {
-                List<Cell> rowMembers = row.GetMembers();
-                Assert.IsTrue(rowMembers.Contains())
+                currentCell = currentCell.GetNextCell();
             }
+            Assert.AreNotEqual(currentCell, startCell);
+
+            for (int i = 0; i < 40; i++)
+            {
+                currentCell = currentCell.GetNextCell();
+            }
+            Assert.AreEqual(currentCell, startCell);
         }
-        */
-        
     }
 }

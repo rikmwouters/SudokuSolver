@@ -24,6 +24,16 @@ namespace SudokuSolver
                 if (i % 9 == 0) { AddMember(currentCell); }
                 currentCell = currentCell.GetNextCell();
             }
+
+            MaybeCreateNextColumn(cell);
+        }
+
+        private void MaybeCreateNextColumn(Cell cell)
+        {
+            if (cell.GetNextCell().GetAssociatedColumn() == null)
+            {
+                Column column = new Column(GetColumnNumber() + 1, cell.GetNextCell());
+            }
         }
 
         private void AddMember(Cell cell)

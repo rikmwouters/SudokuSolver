@@ -16,5 +16,21 @@ namespace SudokuSolverTest
 
             Assert.AreEqual(9, parser.GetStartCell().GetAssociatedColumn().CountMembers());
         }
+
+        [TestMethod]
+        public void AllCellsHaveAColumn()
+        {
+            string input = "000820090500000000308040007100000040006402503000090010093004000004035200000700900";
+            Parser parser = new Parser(input);
+            Cell currentCell = parser.GetStartCell();
+
+            for (int i = 0; i < 81; i++)
+            {
+                Assert.IsNotNull(currentCell.GetAssociatedColumn());
+                currentCell = currentCell.GetNextCell();
+            }
+
+
+        }
     }
 }

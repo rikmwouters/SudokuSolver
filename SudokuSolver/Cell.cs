@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace SudokuSolver
 {
     class Cell
     {
-        private int cellNumber;
+        private readonly int cellNumber;
         private char value;
-        private char[] possibleValues = { '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+        private List<char> potentialValues = new List<char>{ '1', '2', '3', '4', '5', '6', '7', '8', '9' };
         private Cell nextCell;
         private Row associatedRow;
         private Column associatedColumn;
@@ -20,42 +22,89 @@ namespace SudokuSolver
 
         public Cell() { }//Start cell
 
-        public void CheckForNeededValue()
+        public void UpdateInChain(int numberOfLoops)
+        {
+            while(CheckForNeededValue())
+            {
+                UpdatePotentialValues();
+                if (UpdateValueIfSinglePossibility()) { break; };
+                UpdatePotentialValuesOfCompetitors();
+                UpdatePotentialValues();
+                if (UpdateValueIfSinglePossibility()) { break; };
+                //CheckForUniquePotentialValue();
+                break;
+            }
+            NextCellsTurn(numberOfLoops);
+        }
+        
+        public bool CheckForNeededValue()
         {
             if(value.Equals('0'))
             {
-                RequestNewValue();
+                return true;
             }
-            NextCellsTurn();
+            else
+            {
+                return false;
+            }
         }
 
-        private void RequestNewValue()
+        public void UpdatePotentialValues()
         {
-            for(int i = 0; i < 9; i++)
+            potentialValues = potentialValues.Except(associatedRow.GetValuesWithinRow()).ToList();
+            potentialValues = potentialValues.Except(associatedColumn.GetValuesWithinColumn()).ToList();
+            potentialValues = potentialValues.Except(associatedBlock.GetValuesWithinBlock()).ToList();
+        }
+
+        public bool UpdateValueIfSinglePossibility()
+        {
+            if(potentialValues.Count() == 1)
             {
-                if (!associatedBlock.CheckValueObjections(possibleValues[i], 0))
+                value = potentialValues.Single();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private void UpdatePotentialValuesOfCompetitors()
+        {
+            associatedRow.UpdatePotentialValuesWithinRow(this);
+            associatedColumn.UpdatePotentialValuesWithinColumn(this);
+            associatedBlock.UpdatePotentialValuesWithinBlock(this);
+        }
+
+        private void CheckForUniquePotentialValue()
+        {
+            foreach(char potentialValue in potentialValues)
+            {
+                if (!associatedRow.CheckForExistenceOfPotentialValue(potentialValue, this) ||
+                !associatedColumn.CheckForExistenceOfPotentialValue(potentialValue, this) ||
+                !associatedBlock.CheckForExistenceOfPotentialValue(potentialValue, this))
                 {
-                    value = possibleValues[i];
-                    Console.WriteLine("New value added to Cell " + cellNumber);
-                    break;
+                    value = potentialValue;
                 }
             }
         }
 
-        private void NextCellsTurn()
+        private void NextCellsTurn(int numberOfLoops)
         {
-            if (cellNumber != 80)
+            if (numberOfLoops != 1619)
             {
-                nextCell.CheckForNeededValue();
+                nextCell.UpdateInChain(numberOfLoops + 1);
             }
             else
             {
                 Viewer viewer = new Viewer(nextCell);
             }
         }
+        
 
         public Cell GetNextCell() => nextCell;
         public char GetValue() => value;
+        public List<char> GetPotentialValues() => potentialValues;
 
         public void SetNextCell(Cell nextCell) => this.nextCell = nextCell;
         public void SetAssociatedRow(Row row) => this.associatedRow = row;

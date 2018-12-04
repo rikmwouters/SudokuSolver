@@ -14,7 +14,7 @@ namespace SudokuSolverTest
             string input = "000820090500000000308040007100000040006402503000090010093004000004035200000700900";
             Parser parser = new Parser(input);
 
-            Cell startCell = parser.GetStartCell();
+            Cell startCell = parser.startCell;
             Cell currentCell = startCell;
 
             for(int i = 0; i < 41; i++)

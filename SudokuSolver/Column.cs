@@ -43,37 +43,28 @@ namespace SudokuSolver
             }
         }
 
-        public bool CheckValueObjections(char value, int level)
+        public List<char> GetValuesWithinColumn()
         {
-            if (!members.Where(v => v.GetValue() == value).ToList<Cell>().Any()) { return true; }
-            else
+            return members.Select(x => x.GetValue()).Distinct().ToList();
+        }
+
+        public void UpdatePotentialValuesWithinColumn(Cell OriginalCell)
+        {
+            foreach (Cell member in members)
             {
-                return CheckSearchLevel(value, level);
+                if (member != OriginalCell && member.CheckForNeededValue())
+                {
+                    member.UpdatePotentialValues();
+                    member.UpdateValueIfSinglePossibility();
+                }
             }
         }
 
-        private bool CheckCompetitors(char value, int level)
+        public bool CheckForExistenceOfPotentialValue(char givenValue, Cell OriginalCell)
         {
-            List<Cell> competitors = members.Where(v => v.GetValue() == '0').ToList<Cell>();
-            foreach (Cell competitor in competitors)
-            {
-                return competitor.GetAssociatedRow().CheckValueObjections(value, level + 1) |
-                    competitor.GetAssociatedBlock().CheckValueObjections(value, level + 1);
-            }
-            return false;
-        }
-
-        private bool CheckSearchLevel(char value, int level)
-        {
-            if (level < 9)
-            {
-                return CheckCompetitors(value, level + 1);
-            }
-            else
-            {
-                Console.WriteLine("Max level reached for search in Column " + columnNumber);
-                return true;
-            }
+            var origin = new List<Cell> { OriginalCell };
+            var rest = members.Except(origin).ToList();
+            return rest.Exists(x => x.GetPotentialValues().Equals(givenValue));
         }
 
         public int GetColumnNumber() => columnNumber;

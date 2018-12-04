@@ -4,14 +4,14 @@ namespace SudokuSolver
 {
     class Parser
     {
-        private Cell startCell;
+        public Cell startCell { get; private set; }
 
         public Parser(string input)
         {
             PrepareParser(input);
             CreateFirstGroups();
             Viewer viewer = new Viewer(startCell);
-            startCell.CheckForNeededValue();
+            startCell.UpdateInChain(0);
         }
 
         private void PrepareParser(string input)
@@ -47,9 +47,6 @@ namespace SudokuSolver
             Block block = new Block(0, startCell);
         }
 
-        public Cell GetStartCell() //for test
-        {
-            return startCell;
-        }
+        
     }
 }

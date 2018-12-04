@@ -13,7 +13,7 @@ namespace SudokuSolverTest
             string input = "000820090500000000308040007100000040006402503000090010093004000004035200000700900";
             Parser parser = new Parser(input);
 
-            Assert.AreEqual(9, parser.GetStartCell().GetAssociatedRow().CountMembers);
+            Assert.AreEqual(9, parser.startCell.GetAssociatedRow().CountMembers);
         }
 
         [TestMethod]
@@ -21,7 +21,7 @@ namespace SudokuSolverTest
         {
             string input = "000820090500000000308040007100000040006402503000090010093004000004035200000700900";
             Parser parser = new Parser(input);
-            Cell currentCell = parser.GetStartCell();
+            Cell currentCell = parser.startCell;
 
             for (int i = 0; i < 81; i++)
             {
@@ -35,7 +35,7 @@ namespace SudokuSolverTest
         {
             string input = "000820090500000000308040007100000040006402503000090010093004000004035200000700900";
             Parser parser = new Parser(input);
-            Cell currentCell = parser.GetStartCell();
+            Cell currentCell = parser.startCell;
             int[] expectedRowNumbers = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 6, 6, 6, 6, 6, 6, 6, 6, 6, 7, 7, 7, 7, 7, 7, 7, 7, 7, 8, 8, 8, 8, 8, 8, 8, 8, 8 };
 
             for (int i = 0; i < 81; i++)

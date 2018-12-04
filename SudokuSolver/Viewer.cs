@@ -11,15 +11,15 @@ namespace SudokuSolver
 
         private void ViewSheet(Cell startCell)
         {
+            Console.Write("\n\n");
             Cell currentCell = startCell;
             for(int i = 0; i < 81; i++)
             {
-                
-                
                 Formatting(i);
                 Console.Write(currentCell.GetValue() + " ");
                 currentCell = currentCell.GetNextCell();
             }
+            Console.Write("\n\n");
         }
 
         private void Formatting(int i)

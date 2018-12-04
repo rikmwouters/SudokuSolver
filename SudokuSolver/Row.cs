@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace SudokuSolver
@@ -6,7 +7,7 @@ namespace SudokuSolver
     class Row
     {
         private List<Cell> members = new List<Cell>();
-        public int rowNumber;
+        private int rowNumber;
 
         public Row(int rowNumber, Cell cell)
         {
@@ -34,20 +35,46 @@ namespace SudokuSolver
 
         private void MaybeCreateNextRow(Cell currentCell)
         {
-            if (currentCell.GetNextCell().GetAssociatedRow() == null)
+            if (currentCell.GetAssociatedRow() == null)
             {
-                Row row = new Row(GetRowNumber() + 1, currentCell.GetNextCell());
+                Row row = new Row(rowNumber + 1, currentCell);
             }
         }
 
-        public int GetRowNumber()
+        public bool CheckValueObjections(char value, int level)
         {
-            return rowNumber;
+            if (!members.Where(v => v.GetValue() == value).ToList<Cell>().Any()) { return true; }
+            else
+            {
+                return CheckSearchLevel(value, level);
+            }
         }
 
-        internal int CountMembers()
+        private bool CheckCompetitors(char value, int level)
         {
-            return members.Count();
+            List<Cell> competitors = members.Where(v => v.GetValue() == '0').ToList<Cell>();
+            foreach(Cell competitor in competitors)
+            {
+                return competitor.GetAssociatedColumn().CheckValueObjections(value, level + 1) |
+                    competitor.GetAssociatedBlock().CheckValueObjections(value, level + 1);
+            }
+            return false;
         }
+
+        private bool CheckSearchLevel(char value, int level)
+        {
+            if (level < 9)
+            {
+                return CheckCompetitors(value, level + 1);
+            }
+            else
+            {
+                Console.WriteLine("Max level reached for search in Row " + rowNumber);
+                return true;
+            }
+        }
+
+        public int GetRowNumber() => rowNumber;
+        internal int CountMembers => members.Count();
     }
 }

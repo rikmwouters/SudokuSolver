@@ -4,9 +4,9 @@ namespace SudokuSolver
 {
     class Viewer
     {
-        public Viewer(Cell startCell)
+        public Viewer(Cell StartCell)
         {
-            ViewSheet(startCell);
+            ViewSheet(StartCell);
         }
 
         private void ViewSheet(Cell startCell)

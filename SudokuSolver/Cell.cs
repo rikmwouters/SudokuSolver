@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace SudokuSolver
@@ -8,6 +7,7 @@ namespace SudokuSolver
     {
         private readonly int cellNumber;
         private char value;
+        private int changeNumber= -1; //met deze op 0 wordt het eerste vakje overgeslagen
         private List<char> potentialValues = new List<char>{ '1', '2', '3', '4', '5', '6', '7', '8', '9' };
         private Cell nextCell;
         private Row associatedRow;
@@ -18,23 +18,45 @@ namespace SudokuSolver
         {
             this.cellNumber = cellNumber;
             this.value = value;
+            if(value != '0') { potentialValues.Clear(); }
         }
 
         public Cell() { }//Start cell
 
-        public void UpdateInChain(int numberOfLoops)
+        public Cell(char value, List<char> potentialValues) //for test
         {
-            while(CheckForNeededValue())
+            this.value = value;
+            this.potentialValues = potentialValues;
+        }
+
+        public void MainChainOfCellUpdates(int numberOfLoops, int changeNumber)
+        {
+            //if(this.changeNumber != changeNumber)
+            //{
+                this.changeNumber = changeNumber;
+                if (UpdateAndConsiderPotentialValues()) { changeNumber++; };
+                NextCellsTurn(numberOfLoops);
+            //}
+            //else
+            //{
+            //    this.changeNumber++;
+            //    NextCellsTurn(numberOfLoops % 81 + 1539); //The numbers here makes sure to finish at the Start cell.
+            //}
+        }
+
+        public bool UpdateAndConsiderPotentialValues()
+        {
+            bool changesMade = false;
+            if (CheckForNeededValue())
             {
-                UpdatePotentialValues();
-                if (UpdateValueIfSinglePossibility()) { break; };
-                UpdatePotentialValuesOfCompetitors();
-                UpdatePotentialValues();
-                if (UpdateValueIfSinglePossibility()) { break; };
-                //CheckForUniquePotentialValue();
-                break;
+                if (UpdatePotentialValues()) { changesMade = true; };
+                if (UpdateValueIfSinglePossibility()) { return true; };
+                if (UpdatePotentialValuesOfCompetitors()) { changesMade = true; };
+                if (UpdatePotentialValues()) { changesMade = true; };
+                if (UpdateValueIfSinglePossibility()) { return true; };
+                if (IsAnyPotentialValueUniqueWithinAGroup()) { return true; };
             }
-            NextCellsTurn(numberOfLoops);
+            return changesMade;
         }
         
         public bool CheckForNeededValue()
@@ -49,11 +71,14 @@ namespace SudokuSolver
             }
         }
 
-        public void UpdatePotentialValues()
+        public bool UpdatePotentialValues()
         {
+            List<char> oldPotentialValues = potentialValues;
             potentialValues = potentialValues.Except(associatedRow.GetValuesWithinRow()).ToList();
             potentialValues = potentialValues.Except(associatedColumn.GetValuesWithinColumn()).ToList();
             potentialValues = potentialValues.Except(associatedBlock.GetValuesWithinBlock()).ToList();
+            if(oldPotentialValues != potentialValues) { return true; }
+            else { return false; }
         }
 
         public bool UpdateValueIfSinglePossibility()
@@ -61,6 +86,7 @@ namespace SudokuSolver
             if(potentialValues.Count() == 1)
             {
                 value = potentialValues.Single();
+                potentialValues.Clear();
                 return true;
             }
             else
@@ -69,14 +95,16 @@ namespace SudokuSolver
             }
         }
 
-        private void UpdatePotentialValuesOfCompetitors()
+        private bool UpdatePotentialValuesOfCompetitors()
         {
-            associatedRow.UpdatePotentialValuesWithinRow(this);
-            associatedColumn.UpdatePotentialValuesWithinColumn(this);
-            associatedBlock.UpdatePotentialValuesWithinBlock(this);
+            bool changesMade = false;
+            if(associatedRow.UpdatePotentialValuesWithinRow(this)) changesMade = true;
+            if(associatedColumn.UpdatePotentialValuesWithinColumn(this)) changesMade = true;
+            if(associatedBlock.UpdatePotentialValuesWithinBlock(this)) changesMade = true;
+            return changesMade;
         }
 
-        private void CheckForUniquePotentialValue()
+        private bool IsAnyPotentialValueUniqueWithinAGroup()
         {
             foreach(char potentialValue in potentialValues)
             {
@@ -85,20 +113,28 @@ namespace SudokuSolver
                 !associatedBlock.CheckForExistenceOfPotentialValue(potentialValue, this))
                 {
                     value = potentialValue;
+                    potentialValues.Clear();
+                    return true;
                 }
             }
+            return false;
         }
 
         private void NextCellsTurn(int numberOfLoops)
         {
             if (numberOfLoops != 1619)
             {
-                nextCell.UpdateInChain(numberOfLoops + 1);
+                nextCell.MainChainOfCellUpdates(numberOfLoops + 1, changeNumber);
             }
             else
             {
                 Viewer viewer = new Viewer(nextCell);
             }
+        }
+
+        public bool CanBe(char value)
+        {
+            return GetPotentialValues().Contains(value);
         }
         
 

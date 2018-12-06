@@ -6,7 +6,7 @@ namespace SudokuSolver
 {
     class Column
     {
-        public int columnNumber;
+        private readonly int columnNumber;
         private List<Cell> members = new List<Cell>();
 
         public Column(int columnNumber, Cell cell)
@@ -48,23 +48,28 @@ namespace SudokuSolver
             return members.Select(x => x.GetValue()).Distinct().ToList();
         }
 
-        public void UpdatePotentialValuesWithinColumn(Cell OriginalCell)
+        public bool UpdatePotentialValuesWithinColumn(Cell OriginalCell)
         {
+            bool updatesMade = false;
             foreach (Cell member in members)
             {
                 if (member != OriginalCell && member.CheckForNeededValue())
                 {
-                    member.UpdatePotentialValues();
-                    member.UpdateValueIfSinglePossibility();
+                    if (member.UpdatePotentialValues() ||
+                    member.UpdateValueIfSinglePossibility())
+                    {
+                        updatesMade = true;
+                    }
                 }
             }
+            return updatesMade;
         }
 
         public bool CheckForExistenceOfPotentialValue(char givenValue, Cell OriginalCell)
         {
             var origin = new List<Cell> { OriginalCell };
             var rest = members.Except(origin).ToList();
-            return rest.Exists(x => x.GetPotentialValues().Equals(givenValue));
+            return rest.Any(x => x.CanBe(givenValue));
         }
 
         public int GetColumnNumber() => columnNumber;

@@ -4,21 +4,21 @@ namespace SudokuSolver
 {
     class Parser
     {
-        public Cell startCell { get; private set; }
+        public Cell StartCell { get; private set; }
 
         public Parser(string input)
         {
             PrepareParser(input);
             CreateFirstGroups();
-            Viewer viewer = new Viewer(startCell);
-            startCell.UpdateInChain(0);
+            Viewer viewer = new Viewer(StartCell);
+            StartCell.MainChainOfCellUpdates(0, 0);
         }
 
         private void PrepareParser(string input)
         {
             char[] charArray = input.ToCharArray();
-            startCell = new Cell();
-            RunParser(charArray, 0, startCell);
+            StartCell = new Cell();
+            RunParser(charArray, 0, StartCell);
         }
 
         private void RunParser(char[] charArray, int cellNumber, Cell startCell)
@@ -36,15 +36,15 @@ namespace SudokuSolver
 
         private void MakeFieldCircular(Cell finalCell)
         {
-            startCell = startCell.GetNextCell();
-            finalCell.SetNextCell(startCell);
+            StartCell = StartCell.GetNextCell();
+            finalCell.SetNextCell(StartCell);
         }
 
         private void CreateFirstGroups()
         {
-            Row row = new Row(0, startCell);
-            Column column = new Column(0, startCell);
-            Block block = new Block(0, startCell);
+            Row row = new Row(0, StartCell);
+            Column column = new Column(0, StartCell);
+            Block block = new Block(0, StartCell);
         }
 
         

@@ -4,7 +4,7 @@ using SudokuSolver;
 namespace SudokuSolverTest
 {
     [TestClass]
-    public class SolveTest
+    public class FieldsToSolve
     {
         
         [TestMethod]
@@ -13,7 +13,7 @@ namespace SudokuSolverTest
             string input = "083921657967345821251876493548132976729564138136798245372689514814253769695417382";
             Parser parser = new Parser(input);
 
-            Assert.AreEqual('4', parser.startCell.GetValue());
+            Assert.AreEqual('4', parser.StartCell.GetValue());
         }
 
         [TestMethod]
@@ -22,7 +22,7 @@ namespace SudokuSolverTest
             string input = "483921057967345821250870093548132000729564138100798245300689514814200769605417002";
             Parser parser = new Parser(input);
 
-            Cell currentCell = parser.startCell;
+            Cell currentCell = parser.StartCell;
 
             for(int i = 0; i < 81; i++)
             {
@@ -37,7 +37,7 @@ namespace SudokuSolverTest
             string input = "530070000600195000098000060800060003400803001700020006060000280000419005000080079";
             Parser parser = new Parser(input);
 
-            Cell currentCell = parser.startCell;
+            Cell currentCell = parser.StartCell;
 
             for (int i = 0; i < 81; i++)
             {
@@ -46,14 +46,14 @@ namespace SudokuSolverTest
             }
         }
 
-        /*
+        
         [TestMethod]
         public void SogyoFieldIsSolved()
         {
             string input = "000820090500000000308040007100000040006402503000090010093004000004035200000700900";
             Parser parser = new Parser(input);
 
-            Cell currentCell = parser.startCell;
+            Cell currentCell = parser.StartCell;
 
             for (int i = 0; i < 81; i++)
             {
@@ -61,6 +61,6 @@ namespace SudokuSolverTest
                 currentCell = currentCell.GetNextCell();
             }
         }
-        */
+
     }
 }

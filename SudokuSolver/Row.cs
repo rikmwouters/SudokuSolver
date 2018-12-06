@@ -7,7 +7,7 @@ namespace SudokuSolver
     class Row
     {
         private List<Cell> members = new List<Cell>();
-        private int rowNumber;
+        private readonly int rowNumber;
 
         public Row(int rowNumber, Cell cell)
         {
@@ -46,23 +46,28 @@ namespace SudokuSolver
             return members.Select(x => x.GetValue()).Distinct().ToList();
         }
 
-        public void UpdatePotentialValuesWithinRow(Cell OriginalCell)
+        public bool UpdatePotentialValuesWithinRow(Cell OriginalCell)
         {
+            bool changesMade = false;
             foreach (Cell member in members)
             {
                 if (member != OriginalCell && member.CheckForNeededValue())
                 {
-                    member.UpdatePotentialValues();
-                    member.UpdateValueIfSinglePossibility();
+                    if (member.UpdatePotentialValues() ||
+                    member.UpdateValueIfSinglePossibility())
+                    {
+                        changesMade = true;
+                    }
                 }
             }
+            return changesMade;
         }
 
         public bool CheckForExistenceOfPotentialValue(char givenValue, Cell OriginalCell)
         {
             var origin = new List<Cell> { OriginalCell };
             var rest = members.Except(origin).ToList();
-            return rest.Exists(x => x.GetPotentialValues().Equals(givenValue));
+            return rest.Any(x => x.CanBe(givenValue));
         }
 
         public int GetRowNumber() => rowNumber;

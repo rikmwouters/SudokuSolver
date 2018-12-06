@@ -6,7 +6,7 @@ namespace SudokuSolver
 {
     class Block
     {
-        public int blockNumber;
+        private readonly int blockNumber;
         private List<Cell> members = new List<Cell>();
 
         public Block(int blockNumber, Cell cell)
@@ -71,23 +71,28 @@ namespace SudokuSolver
             return members.Select(x => x.GetValue()).Distinct().ToList();
         }
 
-        public void UpdatePotentialValuesWithinBlock(Cell OriginalCell)
+        public bool UpdatePotentialValuesWithinBlock(Cell OriginalCell)
         {
+            bool updatesMade = false;
             foreach (Cell member in members)
             {
                 if (member != OriginalCell && member.CheckForNeededValue())
                 {
-                    member.UpdatePotentialValues();
-                    member.UpdateValueIfSinglePossibility();
+                    if (member.UpdatePotentialValues() ||
+                    member.UpdateValueIfSinglePossibility())
+                    {
+                        updatesMade = true;
+                    }
                 }
             }
+            return updatesMade;
         }
 
         public bool CheckForExistenceOfPotentialValue(char givenValue, Cell OriginalCell)
         {
             var origin = new List<Cell> { OriginalCell };
             var rest = members.Except(origin).ToList();
-            return rest.Exists(x => x.GetPotentialValues().Equals(givenValue));
+            return rest.Any(x => x.CanBe(givenValue));
         }
 
         public int GetBlockNumber() => blockNumber;

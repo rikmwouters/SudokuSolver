@@ -67,7 +67,7 @@ namespace SudokuSolver
         {
             var origin = new List<Cell> { OriginalCell };
             var rest = members.Except(origin).ToList();
-            return rest.Any(x => x.CanBe(givenValue));
+            return rest.Any(member => member.CouldBe(givenValue));
         }
 
         public int GetRowNumber() => rowNumber;

@@ -7,12 +7,13 @@ namespace SudokuSolver
     {
         private readonly int cellNumber;
         private char value;
-        private int changeNumber= -1; //met deze op 0 wordt het eerste vakje overgeslagen
         private List<char> potentialValues = new List<char>{ '1', '2', '3', '4', '5', '6', '7', '8', '9' };
         private Cell nextCell;
         private Row associatedRow;
         private Column associatedColumn;
         private Block associatedBlock;
+        private bool completenessStartFlag = false;
+        private bool gameCompleted = false;
 
         public Cell(char value, int cellNumber)
         {
@@ -29,19 +30,13 @@ namespace SudokuSolver
             this.potentialValues = potentialValues;
         }
 
-        public void MainChainOfCellUpdates(int numberOfLoops, int changeNumber)
+        public void MainChainOfCellUpdates(int numberOfLoops)
         {
-            //if(this.changeNumber != changeNumber)
-            //{
-                this.changeNumber = changeNumber;
-                if (UpdateAndConsiderPotentialValues()) { changeNumber++; };
-                NextCellsTurn(numberOfLoops);
-            //}
-            //else
-            //{
-            //    this.changeNumber++;
-            //    NextCellsTurn(numberOfLoops % 81 + 1539); //The numbers here makes sure to finish at the Start cell.
-            //}
+            UpdateAndConsiderPotentialValues();
+            if (gameCompleted == false)
+            {
+                nextCell.MainChainOfCellUpdates(numberOfLoops + 1);
+            }
         }
 
         public bool UpdateAndConsiderPotentialValues()
@@ -85,8 +80,7 @@ namespace SudokuSolver
         {
             if(potentialValues.Count() == 1)
             {
-                value = potentialValues.Single();
-                potentialValues.Clear();
+                UpdateValue(potentialValues.Single());
                 return true;
             }
             else
@@ -112,42 +106,87 @@ namespace SudokuSolver
                 !associatedColumn.CheckForExistenceOfPotentialValue(potentialValue, this) ||
                 !associatedBlock.CheckForExistenceOfPotentialValue(potentialValue, this))
                 {
-                    value = potentialValue;
-                    potentialValues.Clear();
+                    UpdateValue(potentialValue);
                     return true;
                 }
             }
             return false;
         }
 
-        private void NextCellsTurn(int numberOfLoops)
+        private void ShowViewer()
         {
-            if (numberOfLoops != 1619)
+            Cell startCell = FindStartCell();
+            Viewer viewer = new Viewer(startCell);
+        }
+
+        public bool CouldBe(char value)
+        {
+            return potentialValues.Contains(value);
+        }
+        
+        private void UpdateValue(char value)
+        {
+            this.value = value;
+            potentialValues.Clear();
+            InitializeCompletenessTest();
+        }
+
+        private void InitializeCompletenessTest()
+        {
+            completenessStartFlag = true;
+            if (!nextCell.FieldIsCompleted())
             {
-                nextCell.MainChainOfCellUpdates(numberOfLoops + 1, changeNumber);
+                completenessStartFlag = false;
             }
             else
             {
-                Viewer viewer = new Viewer(nextCell);
+                GameOver();
             }
         }
 
-        public bool CanBe(char value)
+        public bool FieldIsCompleted()
         {
-            return GetPotentialValues().Contains(value);
+            if (completenessStartFlag == true) { return true; }
+            if (value == '0') { return false; }
+            if (!nextCell.FieldIsCompleted())
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
-        
+
+        private void GameOver()
+        {
+            gameCompleted = true;
+            ShowViewer();
+        }
+
+        private Cell FindStartCell()
+        {
+            Cell currentCell = this;
+            for(int i = 0; i < 81; i++)
+            {
+                if (currentCell.cellNumber != 0)
+                {
+                    currentCell = currentCell.GetNextCell();
+                }
+            }
+            return currentCell;
+        }
 
         public Cell GetNextCell() => nextCell;
         public char GetValue() => value;
-        public List<char> GetPotentialValues() => potentialValues;
+        internal int CellNumber => cellNumber;
 
         public void SetNextCell(Cell nextCell) => this.nextCell = nextCell;
         public void SetAssociatedRow(Row row) => this.associatedRow = row;
         public void SetAssociatedColumn(Column column) => this.associatedColumn = column;
         public void SetAssociatedBlock(Block block) => this.associatedBlock = block;
 
-        internal int CellNumber => cellNumber; //for test
+        
         internal Row GetAssociatedRow() => associatedRow; //for test
         internal Column GetAssociatedColumn() => associatedColumn; //for test
         internal Block GetAssociatedBlock() => associatedBlock; //for test

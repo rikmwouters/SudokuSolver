@@ -11,7 +11,7 @@ namespace SudokuSolver
             PrepareParser(input);
             CreateFirstGroups();
             Viewer viewer = new Viewer(StartCell);
-            StartCell.MainChainOfCellUpdates(0, 0);
+            StartCell.MainChainOfCellUpdates(0);
         }
 
         private void PrepareParser(string input)

@@ -13,8 +13,7 @@ namespace SudokuSolver
 
             RunParser(charArray, 0, StartCell);
             CreateFirstGroups();
-            Viewer viewer = new Viewer(StartCell);
-            StartCell.SolveSudoku(0);
+            new Solver(StartCell);
         }
 
         private void RunParser(char[] charArray, int cellNumber, Cell startCell)
@@ -38,9 +37,9 @@ namespace SudokuSolver
 
         private void CreateFirstGroups()
         {
-            Row row = new Row(0, StartCell);
-            Column column = new Column(0, StartCell);
-            Block block = new Block(0, StartCell);
+            new Row(0, StartCell);
+            new Column(0, StartCell);
+            new Block(0, StartCell);
         }
 
         

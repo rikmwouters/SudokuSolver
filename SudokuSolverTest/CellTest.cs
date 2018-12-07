@@ -63,7 +63,7 @@ namespace SudokuSolverTest
 
             Row row = new Row(0, cell1);
 
-            Assert.IsFalse(row.CheckForExistenceOfPotentialValue('1', cell1));
+            Assert.IsFalse(row.CheckForExistenceOfPossibleValue('1', cell1));
         }
 
         [TestMethod]
@@ -99,7 +99,7 @@ namespace SudokuSolverTest
 
             Row row = new Row(0, cell1);
 
-            Assert.IsTrue(row.CheckForExistenceOfPotentialValue('1', cell1));
+            Assert.IsTrue(row.CheckForExistenceOfPossibleValue('1', cell1));
         }
 
         [TestMethod]
@@ -135,7 +135,7 @@ namespace SudokuSolverTest
 
             Row row = new Row(0, cell1);
 
-            Assert.IsTrue(cell8.UpdateValueIfSinglePossibility());
+            Assert.IsTrue(cell8.UpdateValueIfOnlyPossibility());
             Assert.AreEqual('2', cell8.GetValue());
         }
 
@@ -172,7 +172,7 @@ namespace SudokuSolverTest
 
             Row row = new Row(0, cell1);
 
-            Assert.IsFalse(cell7.UpdateValueIfSinglePossibility());
+            Assert.IsFalse(cell7.UpdateValueIfOnlyPossibility());
             Assert.AreEqual('0', cell7.GetValue());
         }
 
@@ -189,7 +189,7 @@ namespace SudokuSolverTest
                 currentCell = currentCell.GetNextCell();
             }
 
-            currentCell.UpdateAndConsiderPotentialValues();
+            currentCell.UpdateAndConsiderPossibleValues();
 
             Assert.AreEqual('3', currentCell.GetValue());
         }
@@ -209,7 +209,7 @@ namespace SudokuSolverTest
                 currentCell = currentCell.GetNextCell();
             }
 
-            currentCell.UpdateAndConsiderPotentialValues();
+            currentCell.UpdateAndConsiderPossibleValues();
 
             Assert.AreEqual('8', currentCell.GetValue());
         }
@@ -227,7 +227,7 @@ namespace SudokuSolverTest
                 currentCell = currentCell.GetNextCell();
             }
 
-            currentCell.UpdateAndConsiderPotentialValues();
+            currentCell.UpdateAndConsiderPossibleValues();
 
             Assert.AreEqual('5', currentCell.GetValue());
         }

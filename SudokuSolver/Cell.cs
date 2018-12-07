@@ -7,7 +7,7 @@ namespace SudokuSolver
     {
         private readonly int cellNumber;
         private char value;
-        private List<char> potentialValues = new List<char>{ '1', '2', '3', '4', '5', '6', '7', '8', '9' };
+        private List<char> possibleValues = new List<char>{ '1', '2', '3', '4', '5', '6', '7', '8', '9' };
         private Cell nextCell;
         private Row associatedRow;
         private Column associatedColumn;
@@ -19,37 +19,37 @@ namespace SudokuSolver
         {
             this.cellNumber = cellNumber;
             this.value = value;
-            if(value != '0') { potentialValues.Clear(); }
+            if(value != '0') { possibleValues.Clear(); }
         }
 
         public Cell() { }//Start cell
 
-        public Cell(char value, List<char> potentialValues) //for test
+        public Cell(char value, List<char> possibleValues) //for test
         {
             this.value = value;
-            this.potentialValues = potentialValues;
+            this.possibleValues = possibleValues;
         }
 
         public void MainChainOfCellUpdates(int numberOfLoops)
         {
-            UpdateAndConsiderPotentialValues();
+            UpdateAndConsiderPossibleValues();
             if (gameCompleted == false)
             {
                 nextCell.MainChainOfCellUpdates(numberOfLoops + 1);
             }
         }
 
-        public bool UpdateAndConsiderPotentialValues()
+        public bool UpdateAndConsiderPossibleValues()
         {
             bool changesMade = false;
             if (CheckForNeededValue())
             {
-                if (UpdatePotentialValues()) { changesMade = true; };
-                if (UpdateValueIfSinglePossibility()) { return true; };
-                if (UpdatePotentialValuesOfCompetitors()) { changesMade = true; };
-                if (UpdatePotentialValues()) { changesMade = true; };
-                if (UpdateValueIfSinglePossibility()) { return true; };
-                if (IsAnyPotentialValueUniqueWithinAGroup()) { return true; };
+                if (UpdatePossibleValues()) { changesMade = true; };
+                if (UpdateValueIfOnlyPossibility()) { return true; };
+                if (UpdatePossibleValuesOfCompetitors()) { changesMade = true; };
+                if (UpdatePossibleValues()) { changesMade = true; };
+                if (UpdateValueIfOnlyPossibility()) { return true; };
+                if (IsAnyPossibilityNotPossibleElsewhere()) { return true; };
             }
             return changesMade;
         }
@@ -66,21 +66,21 @@ namespace SudokuSolver
             }
         }
 
-        public bool UpdatePotentialValues()
+        public bool UpdatePossibleValues()
         {
-            List<char> oldPotentialValues = potentialValues;
-            potentialValues = potentialValues.Except(associatedRow.GetValuesWithinRow()).ToList();
-            potentialValues = potentialValues.Except(associatedColumn.GetValuesWithinColumn()).ToList();
-            potentialValues = potentialValues.Except(associatedBlock.GetValuesWithinBlock()).ToList();
-            if(oldPotentialValues != potentialValues) { return true; }
+            List<char> oldPossibleValues = possibleValues;
+            possibleValues = possibleValues.Except(associatedRow.GetValuesWithinRow()).ToList();
+            possibleValues = possibleValues.Except(associatedColumn.GetValuesWithinColumn()).ToList();
+            possibleValues = possibleValues.Except(associatedBlock.GetValuesWithinBlock()).ToList();
+            if(oldPossibleValues != possibleValues) { return true; }
             else { return false; }
         }
 
-        public bool UpdateValueIfSinglePossibility()
+        public bool UpdateValueIfOnlyPossibility()
         {
-            if(potentialValues.Count() == 1)
+            if(possibleValues.Count() == 1)
             {
-                UpdateValue(potentialValues.Single());
+                UpdateValue(possibleValues.Single());
                 return true;
             }
             else
@@ -89,28 +89,34 @@ namespace SudokuSolver
             }
         }
 
-        private bool UpdatePotentialValuesOfCompetitors()
+        private bool UpdatePossibleValuesOfCompetitors()
         {
             bool changesMade = false;
-            if(associatedRow.UpdatePotentialValuesWithinRow(this)) changesMade = true;
-            if(associatedColumn.UpdatePotentialValuesWithinColumn(this)) changesMade = true;
-            if(associatedBlock.UpdatePotentialValuesWithinBlock(this)) changesMade = true;
+            if(associatedRow.UpdatePossibleValuesWithinRow(this)) changesMade = true;
+            if(associatedColumn.UpdatePossibleValuesWithinColumn(this)) changesMade = true;
+            if(associatedBlock.UpdatePossibleValuesWithinBlock(this)) changesMade = true;
             return changesMade;
         }
 
-        private bool IsAnyPotentialValueUniqueWithinAGroup()
+        private bool IsAnyPossibilityNotPossibleElsewhere()
         {
-            foreach(char potentialValue in potentialValues)
+            foreach(char possibleValue in possibleValues)
             {
-                if (!associatedRow.CheckForExistenceOfPotentialValue(potentialValue, this) ||
-                !associatedColumn.CheckForExistenceOfPotentialValue(potentialValue, this) ||
-                !associatedBlock.CheckForExistenceOfPotentialValue(potentialValue, this))
-                {
-                    UpdateValue(potentialValue);
-                    return true;
-                }
+                if (NotPossibleInRemainderOfAnyGroup(possibleValue)) { return true; }
             }
             return false;
+        }
+
+        private bool NotPossibleInRemainderOfAnyGroup(char possibleValue)
+        {
+            if (!associatedRow.CheckForExistenceOfPossibleValue(possibleValue, this) ||
+                !associatedColumn.CheckForExistenceOfPossibleValue(possibleValue, this) ||
+                !associatedBlock.CheckForExistenceOfPossibleValue(possibleValue, this))
+            {
+                UpdateValue(possibleValue);
+                return true;
+            }
+            else { return false; }
         }
 
         private void ShowViewer()
@@ -121,13 +127,13 @@ namespace SudokuSolver
 
         public bool CouldBe(char value)
         {
-            return potentialValues.Contains(value);
+            return possibleValues.Contains(value);
         }
         
         private void UpdateValue(char value)
         {
             this.value = value;
-            potentialValues.Clear();
+            possibleValues.Clear();
             InitializeCompletenessTest();
         }
 

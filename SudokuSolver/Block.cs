@@ -71,15 +71,15 @@ namespace SudokuSolver
             return members.Select(x => x.GetValue()).Distinct().ToList();
         }
 
-        public bool UpdatePotentialValuesWithinBlock(Cell OriginalCell)
+        public bool UpdatePossibleValuesWithinBlock(Cell OriginalCell)
         {
             bool updatesMade = false;
             foreach (Cell member in members)
             {
                 if (member != OriginalCell && member.CheckForNeededValue())
                 {
-                    if (member.UpdatePotentialValues() ||
-                    member.UpdateValueIfSinglePossibility())
+                    if (member.UpdatePossibleValues() ||
+                    member.UpdateValueIfOnlyPossibility())
                     {
                         updatesMade = true;
                     }
@@ -88,7 +88,7 @@ namespace SudokuSolver
             return updatesMade;
         }
 
-        public bool CheckForExistenceOfPotentialValue(char givenValue, Cell OriginalCell)
+        public bool CheckForExistenceOfPossibleValue(char givenValue, Cell OriginalCell)
         {
             var origin = new List<Cell> { OriginalCell };
             var rest = members.Except(origin).ToList();

@@ -8,17 +8,13 @@ namespace SudokuSolver
 
         public Parser(string input)
         {
-            PrepareParser(input);
-            CreateFirstGroups();
-            Viewer viewer = new Viewer(StartCell);
-            StartCell.MainChainOfCellUpdates(0);
-        }
-
-        private void PrepareParser(string input)
-        {
             char[] charArray = input.ToCharArray();
             StartCell = new Cell();
+
             RunParser(charArray, 0, StartCell);
+            CreateFirstGroups();
+            Viewer viewer = new Viewer(StartCell);
+            StartCell.SolveSudoku(0);
         }
 
         private void RunParser(char[] charArray, int cellNumber, Cell startCell)

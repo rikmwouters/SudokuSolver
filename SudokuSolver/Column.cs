@@ -26,7 +26,7 @@ namespace SudokuSolver
                 currentCell = currentCell.GetNextCell();
             }
 
-            MaybeCreateNextColumn(cell);
+            CreateNextColumn(cell);
         }
 
         private void AddMember(Cell cell)
@@ -35,7 +35,7 @@ namespace SudokuSolver
             cell.SetAssociatedColumn(this);
         }
 
-        private void MaybeCreateNextColumn(Cell cell)
+        private void CreateNextColumn(Cell cell)
         {
             if (cell.GetNextCell().GetAssociatedColumn() == null)
             {

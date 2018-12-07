@@ -30,12 +30,12 @@ namespace SudokuSolver
             this.possibleValues = possibleValues;
         }
 
-        public void MainChainOfCellUpdates(int numberOfLoops)
+        public void SolveSudoku(int numberOfLoops)
         {
             UpdateAndConsiderPossibleValues();
             if (gameCompleted == false)
             {
-                nextCell.MainChainOfCellUpdates(numberOfLoops + 1);
+                nextCell.SolveSudoku(numberOfLoops + 1);
             }
         }
 
